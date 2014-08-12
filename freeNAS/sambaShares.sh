@@ -1,5 +1,17 @@
 #! /bin/bash
 
+# ----------------how to -----------------
+# mount -uw / 
+# echo $PATH
+# mkdir /root/bin
+# cd /root/bin
+# ln -s /path_to_script/sambaShares.sh sambaShares
+# mount -ur / 
+# ctrl + d   (exit)
+# **login again**
+# sambaShares -ls   <--  it works !¡
+# ------------------------------------------
+
 smbConfFile=/usr/local/etc/smb.conf
 
 case "$1" in
