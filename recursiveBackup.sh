@@ -49,6 +49,7 @@ echo $size
 echo ""
 
 files=`find $path/* -name '*' -size $size`
+# change last sed we need to include $path variable instead 's/\/var\/log//g'`
 files=`echo  $files |  tr ' ' '\n' | sed -e 's/\/var\/log//g'`
 files=(`echo $files`)
 filesLength=${#files[@]}
