@@ -1,7 +1,5 @@
 #! /bin/bash
 echo -e "\n scannig network .....\n"
-#ping 10.29.214.31 -c 1 -W 1 | grep received | awk '{print $4}' 
-#ping 10.29.214.51 -c 1 -W 1 | grep received | awk '{print $4}'
 
 pingFunction()
 {
@@ -14,7 +12,7 @@ pingFunction()
 }
 
 
-for i in 10.29.214.{1..126} 
+for i in 10.10.127.{1..254} 
 do
   pingFunction $i
 done
