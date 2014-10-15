@@ -1,4 +1,5 @@
 #! /bin/bash
+# https://github.com/darknautic/linuxScripts.git
 echo -e "\n scannig network .....\n"
 
 pingFunction()
