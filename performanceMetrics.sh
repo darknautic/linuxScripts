@@ -21,7 +21,11 @@ MemFree=`cat /proc/meminfo | grep MemFree  | awk '{print $2}'`
 MemTotal=`cat /proc/meminfo | grep MemTotal | awk '{print $2}'`
 SwapTotal=`cat /proc/meminfo | grep SwapTotal | awk '{print $2}'`
 SwapFree=`cat /proc/meminfo | grep SwapFree | awk '{print $2}'`
-cpuUsage=`top -bn 1  | grep "Cpu(s)" | awk '{print $2 + $3 +  $4 + $6}'`
+#cpuUsage=`top -bn 1  | grep "Cpu(s)" | awk '{print $2 + $3 +  $4 + $6}'`
+# 21 comes from number of frames proceced and at the end /20 it's an average
+# it's 20 because the first value (firstframe ) it's removed
+cpuUsage=`top -bn 21  | grep "Cpu(s)" | awk '{print $2 + $3 +  $4 + $6}' | tail -n +2 |  paste -sd+ | bc | awk '{print $1/20}'`
+
 # ..   add your metrics
 # .
 #
