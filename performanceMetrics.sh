@@ -51,6 +51,13 @@ eth3_in=`ifstat  -n  -i eth3 5 7 |  tail -n +3 | awk '{print $1}' | paste -sd+ |
 eth4_out=`ifstat  -n  -i eth3 5 7 |  tail -n +3 | awk '{print $2}' | paste -sd+ | bc | awk '{print $1/7}'`
 
 
+
+#--- Storage
+storageTotal=`vgdisplay | grep "VG Size" | awk '{print $3}' | paste -sd+ | sed 's/,/./g' | bc`
+storageUnit=`vgdisplay | grep "VG Size" | awk '{print $4}'  | uniq |  paste -sd/`
+totalPE=`vgdisplay | grep -e "Total PE" | awk '{print $3}' | paste -sd+ | bc`
+allocatedPE=`vgdisplay | grep -e "Alloc PE" | awk '{print $5}' | paste -sd+ | bc`
+
 # ..   add your metrics
 # .
 #
@@ -60,36 +67,47 @@ eth4_out=`ifstat  -n  -i eth3 5 7 |  tail -n +3 | awk '{print $2}' | paste -sd+ 
 ##                          Functions                     ##
 
 
-function sum (){
+#sum (){
+#        local total=0
+#        for number in "$@"; do
+#                total=$(bc <<< "scale=2; $total+$number;")
+#        done
+#        echo $total
+#        }
+
+
+
+sum (){
         local total=0
         for number in "$@"; do
-                total=$(bc <<< "scale=2; $total+$number;")
+                total=`echo  $total" "$number | awk '{ sum = $1+$2 } END { print sum }'`
         done
         echo $total
+
         }
 
 
-function trim(){
+trim(){
         # with 2 decimals in this number 1234567890123456.123456789 starts to fail
         echo `echo $1 | awk  '{ myTrimNumber = sprintf("%.2f", $1); print myTrimNumber }'`
         }
 
 
-function percentOf () {
+percentOf () {
         # percentage
         # $1 is what percent of $2 ?
         echo "scale=2;($1/$2)*100" | bc
         }
 
 
-function percentOfInv () {
+percentOfInv () {
         # remaining percentage
         # 100 -( $1 is what percent of $2 ? )
         echo "100-`percentOf $1 $2`" | bc
         }
 
 
-function printCSV () {
+printCSV () {
         #echo $@
         csvLine=""
         for args in $@
@@ -111,7 +129,7 @@ memFreePercent=`trim $(percentOf $MemFree $MemTotal)`
 swapUsedPercent=`trim $(percentOfInv $SwapFree $SwapTotal)`
 totalInterfazIN=`trim $(sum $eth0_in $eth1_in $eth2_in $eth3_in)`
 totalInterfazOut=`trim $(sum $eth0_out $eth1_out $eth2_out $eth3_out)`
-
+storageUsedPercent=`trim $(percentOf $allocatedPE $totalPE)`
 
 
 
@@ -122,5 +140,5 @@ totalInterfazOut=`trim $(sum $eth0_out $eth1_out $eth2_out $eth3_out)`
 #echo -e "MemUtil : "$memUsedPercent
 #echo -e "MemFreePer: "$memFreePercent
 
-printCSV $timeStamp $memUsedPercent $swapUsedPercent $cpuUsage $totalInterfazIN $totalInterfazOut
+printCSV $timeStamp $memUsedPercent $swapUsedPercent $cpuUsage $totalInterfazIN $totalInterfazOut $storageTotal$storageUnit $storageUsedPercent
 
