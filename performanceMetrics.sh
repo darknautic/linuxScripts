@@ -53,10 +53,10 @@ eth4_out=`ifstat  -n  -i eth3 5 7 |  tail -n +3 | awk '{print $2}' | paste -sd+ 
 
 
 #--- Storage
-storageTotal=`vgdisplay | grep "VG Size" | awk '{print $3}' | paste -sd+ | sed 's/,/./g' | bc`
-storageUnit=`vgdisplay | grep "VG Size" | awk '{print $4}'  | uniq |  paste -sd/`
-totalPE=`vgdisplay | grep -e "Total PE" | awk '{print $3}' | paste -sd+ | bc`
-allocatedPE=`vgdisplay | grep -e "Alloc PE" | awk '{print $5}' | paste -sd+ | bc`
+storageTotal=`/sbin/vgdisplay | grep "VG Size" | awk '{print $3}' | paste -sd+ | sed 's/,/./g' | bc`
+storageUnit=`/sbin/vgdisplay | grep "VG Size" | awk '{print $4}'  | uniq |  paste -sd/`
+totalPE=`/sbin/vgdisplay | grep -e "Total PE" | awk '{print $3}' | paste -sd+ | bc`
+allocatedPE=`/sbin/vgdisplay | grep -e "Alloc PE" | awk '{print $5}' | paste -sd+ | bc`
 
 # ..   add your metrics
 # .
