@@ -109,6 +109,13 @@ percentOfInv () {
 
 printCSV () {
         #echo $@
+	if [ ! -f $filePath ]; 
+		then
+		touch $filePath
+		echo "timeStamp,memUsed%,swapUsed%,cpuUsage%,BW IN (KB/s),BW OUT (KB/s),totalStorage,storageUsed%," > $filePath
+		#else
+		#echo "File Found !¡"	
+	fi
         csvLine=""
         for args in $@
         do
