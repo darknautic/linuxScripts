@@ -8,8 +8,8 @@
 
 
 ## Please customize below constants as you require.
-plain_file="/mnt/c/Documents and Settings/esajaus/0/docs/notes/secret.note"
-cipher_file="/mnt/c/Documents and Settings/esajaus/0/docs/notes/secret.note.cipher"
+plain_file="/mnt/c/Documents and Settings/user/secret.note"
+cipher_file="/mnt/c/Documents and Settings/user/secret.note.cipher"
 
 
 
