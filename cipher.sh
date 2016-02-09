@@ -94,15 +94,20 @@ while true; do
 				echo -e "\n Ready to be manually edited.";;		
 
 			encrypt|e)
-				echo -e "\n (cipher) encrypting file ...\n";		
-				encrypt "${plain_file}" "${cipher_file}" $CIPHER;
-				rm -rf "${plain_file}";;	
+				echo -e "\n (cipher) encrypting file ...\n";
+				if [[ `file_status` == 'plain' ]];then		
+					encrypt "${plain_file}" "${cipher_file}" $CIPHER;
+					rm -rf "${plain_file}";
+				else 
+					echo -e "\n The file is  already encrypted.\n"
+				fi;;	
 
 			help|h)
 				#echo -e "\n options : encrypt|e  decrypt|d  lookup:[your search]|l:[your search] help|h  bye|exit \n";
 				echo -e "\n ---  CLI usage --- \n"
 				echo -e " > encrypt (e)   : Encrypt the plain text file defined in \"plain_file\" .\n"
-				echo -e " > decrypt (d)   : Decrypt the chiper file defined in \"cipher_file\" , useful for editing whole file.\n" 
+				echo -e " > decrypt (d)   : Decrypt the chiper file defined in \"cipher_file\" , " 
+				echo -e "\t\t 				Useful for editing whole file using standar text-editor.\n"
 				echo -e " > lookup  (l)   : Look your words up in the cipher file without writing plain-text file to disk. "
 				echo -e "\t\t Display matching rows.  e.g  lookup:myWord   , it is not case sensitive.\n"	
 				echo -e " > help    (h)   : Show this message.\n"
