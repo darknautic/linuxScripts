@@ -8,8 +8,8 @@
 
 
 ## Please customize below constants as you require.
-plain_file="/mnt/c/Documents and Settings/user/secret.note"
-cipher_file="/mnt/c/Documents and Settings/user/secret.note.cipher"
+plain_file="/mnt/c/Documents and Settings/user/access.note"
+cipher_file="/mnt/c/Documents and Settings/user/access.note.cipher"
 
 
 
@@ -22,6 +22,15 @@ encrypt () {
 
 decrypt () {
 	openssl aes-256-cbc -d -a -in "${1}" -out "${2}" -k $3
+	if (( $? )); then
+		echo -e " \n\n *** decryption WRONG ***\n" ;
+		echo -e " \t possible cause : Wrong Password , please verify with \"status\" command.\n\n" ;
+		rm -rf "${plain_file}"; # remove wrong output plain-text file .	
+		#echo "Failure" >&2;
+		exit 1;
+	else 
+		echo -e "\n decryption  OK"
+	fi
 }
 
 
@@ -38,7 +47,8 @@ getWord () {
 lookup () {
 	
 	cipherText=`cat "${1}"`
-	echo $cipherText | openssl aes-256-cbc -d -a -k $3 | grep -i --color $4
+	#echo $cipherText | openssl enc -base64 -d | openssl aes-256-cbc -d -a -k $3 | grep -i --color $4
+	cat "${1}" | openssl aes-256-cbc -d -a -k $3 | grep -i --color $4
 	echo -e "\n"
 
 }
@@ -83,15 +93,29 @@ while true; do
 
 			lookup:*|l:*)
 				word=`getWord $commands`;
-				echo "the Pattern : "$word;	
-				lookup "${cipher_file}" "${plain_file}" $CIPHER $word;			
+				#echo "the Pattern : "$word;
+				if [[ `file_status` == 'plain' ]];then	# if the file was decrypted, look up in the correct file.
+					cat "${plain_file}"  | grep -i --color $word; 
+				else
+					lookup "${cipher_file}" "${plain_file}" $CIPHER $word;
+				fi
+				;;
+			
+			password:*|p:*)
+				newPass=`getWord $commands`;
+				CIPHER=$newPass;
+				;;
+			
+			status|s)
+				echo "file : >"`file_status`"<";
+				echo "password : >"$CIPHER"<";
 				;;
 
 			decrypt|d)
 				echo -e "\n (plain) decrypting file ...\n";								
 				decrypt "${cipher_file}" "${plain_file}" $CIPHER;
 				rm -rf "${cipher_file}";	
-				echo -e "\n Ready to be manually edited.";;		
+				echo -e "\n ** Ready to be manually edited.\n\n";;		
 
 			encrypt|e)
 				echo -e "\n (cipher) encrypting file ...\n";
@@ -99,24 +123,25 @@ while true; do
 					encrypt "${plain_file}" "${cipher_file}" $CIPHER;
 					rm -rf "${plain_file}";
 				else 
-					echo -e "\n The file is  already encrypted.\n"
+					echo -e "\n ** The file is  already encrypted.\n"
 				fi;;	
 
 			help|h)
 				#echo -e "\n options : encrypt|e  decrypt|d  lookup:[your search]|l:[your search] help|h  bye|exit \n";
 				echo -e "\n ---  CLI usage --- \n"
-				echo -e " > encrypt (e)   : Encrypt the plain text file defined in \"plain_file\" .\n"
-				echo -e " > decrypt (d)   : Decrypt the chiper file defined in \"cipher_file\" , " 
-				echo -e "\t\t 				Useful for editing whole file using standar text-editor.\n"
-				echo -e " > lookup  (l)   : Look your words up in the cipher file without writing plain-text file to disk. "
+				echo -e " > encrypt  (e)   : Encrypt the plain text file defined in \"plain_file\" .\n"
+				echo -e " > decrypt  (d)   : Decrypt the chiper file defined in \"cipher_file\" , " 
+				echo -e "\t\t Useful for editing whole file using standar text-editor.\n"
+				echo -e " > lookup   (l)   : Look your words up in the cipher file without writing plain-text file to disk. "
 				echo -e "\t\t Display matching rows.  e.g  lookup:myWord   , it is not case sensitive.\n"	
-				echo -e " > help    (h)   : Show this message.\n"
-				echo -e " > exit    (q)   : Exit from CLI . Verifies if the file was encrypted again before to leave,"
+				echo -e " > password (p)  : Set password for encrypting and decrypting the file.\n"
+				echo -e " > help     (h)   : Show this message.\n"
+				echo -e " > quit     (q)   : Exit from CLI . Verifies if the file was encrypted again before to leave,"
 				echo -e "\t\t that's because the goal is to keep your personal and sensitive information safe.\n"	
 				echo ""
 				;;			
 				
-			bye|exit|q)				
+			bye|exit|quit|q)				
 				if [[ `file_status` == 'plain' ]];then
 					echo -e "\n*** It is recommended to encrypt your file  before to exit. Your personal information is in plain text.\n"					
 					read -p " Do you really want exit ? [Y|N] : " want2exit
