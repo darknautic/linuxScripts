@@ -29,8 +29,9 @@ fi
 
 #while read line ;do if [[ $(grep -cw "${line}" f1.txt) -gt 0 ]]; then echo ${line} ;else echo -e " * "${line} ;fi ; done< f2.txt
 
-## how to install ##
-#> wget https://github.com/darknautic/linuxScripts/blob/master/joins.bash 2>/dev/null
+##
+##  how to install
+#> wget --no-check-certificate  https://raw.githubusercontent.com/darknautic/linuxScripts/master/joins.bash
 #> mv joins.bash /bin/joins
-#> echo "alias \"joins\"=\"bash /bin/joins\"" >> /home/mobaxterm/.bashrc
+#> echo "alias joins=\"bash /bin/joins\"" >> /home/mobaxterm/.bashrc
 #> cd /home/mobaxterm/ ; . .bashrc
