@@ -1,11 +1,14 @@
 #! /bin/bash
 
+## Backup log files keeping same directory structure .
+## 
 ## Feel free to use, modify and distribute this script as well as request  modify 
-## privilege on this repository to improve it and make it more useful and valuable.
+## privilege on this repository to improve it and make it more useful.
 ## blue.darkNautic@gmail.com
+##
+##
 
-
-echo "Backing Log Files."
+echo "Log Files Backups"
 
 
 ##  /bin/bash /mnt/backup_log_files.sh
