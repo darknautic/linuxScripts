@@ -1,3 +1,0 @@
-hello from extractor
-commit #2
-commit #3
