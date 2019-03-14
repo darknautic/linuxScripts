@@ -16,7 +16,7 @@ signatureCheck=${1}
 if [[ "${signature}" == "${signatureCheck}" ]]; then
         flag="OK"
 else
-        flag="NOK"
+        flag="FAIL"
 fi
 
 
